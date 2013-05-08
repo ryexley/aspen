@@ -24,10 +24,10 @@
 			this.setElementHeight();
 		},
 
-		setElementHeight: function (el) {
+		setElementHeight: function () {
 			this.$window = $(window);
 			this.$body = $("body");
-			this.$el = $(el);
+			this.$el = $(this.el);
 
 			var windowHeight = this.$window.height();
 			var bodyMargins = parseInt(this.$body.css("marginTop").replace("px", ""), 10) + parseInt(this.$body.css("marginBottom").replace("px", ""), 10);
