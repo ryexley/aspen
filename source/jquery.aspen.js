@@ -20,29 +20,46 @@
 	Plugin.prototype = {
 
 		init: function () {
-			$(window).on("resize", this.setElementHeight);
+			var self = this;
+
+			this.$window = $(window);
+			this.$body = $("body");
+			this.$el = $(this.el);
+			this.borderBox = this.borderBoxIsSet();
+
+			$(window).on("resize", function () { self.setElementHeight(); });
 			this.setElementHeight();
 		},
 
 		setElementHeight: function () {
-			this.$window = $(window);
-			this.$body = $("body");
-			this.$el = $(this.el);
-
+			var offsetValues = [];
 			var windowHeight = this.$window.height();
-			var bodyMargins = parseInt(this.$body.css("marginTop").replace("px", ""), 10) + parseInt(this.$body.css("marginBottom").replace("px", ""), 10);
-			// TODO: Figure out how to check if box-sizing is set/defined in CSS...
-			// ...if its set, we don't need to offset elPadding, but if its not, we need to
-			// var elPadding = parseInt(this.$el.css("paddingTop").replace("px", ""), 10) + parseInt(this.$el.css("paddingBottom").replace("px", ""), 10);
+
+			offsetValues.push((parseInt(this.$body.css("marginTop").replace("px", ""), 10) + parseInt(this.$body.css("marginBottom").replace("px", ""), 10)));
+			var elPadding = this.borderBox ? 0 : (parseInt(this.$el.css("paddingTop").replace("px", ""), 10) + parseInt(this.$el.css("paddingBottom").replace("px", ""), 10));
+			offsetValues.push(elPadding);
 			// TODO: check for and calculate the height of the "above" option
 			// TODO: check for and calculate the height of the "below" option
 			// TODO: calculate margins to offset from elHeight
-			var elHeight = (windowHeight - bodyMargins);
-
-			// TODO: This is empty on window resize...need to figure out wire up the window resize event to run this function against the target element
-			console.log(this.$el);
+			var offset = offsetValues.reduce(function (a, b) {
+				return a + b;
+			});
+			var elHeight = (windowHeight - offset);
 
 			this.$el.css({ height: elHeight + "px" });
+		},
+
+		borderBoxIsSet: function () {
+			var isSet = false;
+
+			$.each(this.$el.parents(), function () {
+				if ($(this).css("box-sizing") === "border-box") {
+					isSet = true;
+					return false;
+				}
+			});
+
+			return isSet;
 		}
 
 	};
