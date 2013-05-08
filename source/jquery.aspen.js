@@ -3,12 +3,44 @@
 (function ($, window, document, undefined) {
 
 	var pluginName = "aspen";
+	var resizeFunction = this.pluginName + "SmartResize";
 	var defaults = {
 		above: undefined,
 		below: undefined,
 		margin: "10"
 	};
 
+	// embedding smartresize plugin: http://paulirish.com/2009/throttled-smartresize-jquery-event-handler/
+	var debounce = function (func, threshold, execAsap) {
+		var timeout;
+
+		return function debounced () {
+			var obj = this;
+			var args = arguments;
+
+			function delayed () {
+				if (!execAsap) {
+					func.apply(obj, args);
+				}
+
+				timeout = null;
+			}
+
+			if (timeout) {
+				clearTimeout(timeout);
+			} else if (execAsap) {
+				func.apply(obj, args);
+			}
+
+			timeout = setTimeout(delayed, threshold || 100);
+		};
+	};
+	// register the smartresize function with jQuery
+	$.fn[this.resizeFunction] = function (fn) {
+		return fn ? this.bind("resize", debounce(fn)) : this.trigger(resizeFunction);
+	};
+
+	// now lets get to the plugin...
 	function Plugin (el, options) {
 		this.el = el;
 		this.options = $.extend({}, defaults, options);
@@ -27,11 +59,12 @@
 			this.$el = $(this.el);
 			this.borderBox = this.borderBoxIsSet();
 
-			$(window).on("resize", function () { self.setElementHeight(); });
+			this.$window[this.resizeFunction](function () { self.setElementHeight(); });
 			this.setElementHeight();
 		},
 
 		setElementHeight: function () {
+			console.log("Resizing el");
 			var offsetValues = [];
 			var windowHeight = this.$window.height();
 
