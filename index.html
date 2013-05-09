@@ -5,34 +5,76 @@
 	<title>jQuery Aspen plugin example</title>
 	<style type="text/css">
 		* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
-		body { font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; font-weight: 300; margin: 20px; }
+		body { color: #777; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; font-weight: 300; margin: 20px 0 20px 20px; overflow-y: hidden; }
 		h1, h2, h3, h4, h5, h6 { font-weight: 100; }
-		#left { border: 1px solid #ccc; float: left; padding: 0 20px 20px 20px; width: 50%; }
-		#right { float: left; padding: 0 20px; width: 50%; }
-		#right-header, #right-footer { background: #f7f7f7; border-left: 1px solid #ccc; border-right: 1px solid #ccc; padding: 10px 20px; }
-		#right-header { border-top: 1px solid #ccc; }
-		#right-footer { border-bottom: 1px solid #ccc; }
-		#above-and-below { border: 1px solid #ccc; padding: 0 20px 20px 20px; }
+		pre { background: #f7f7f7; border: 1px solid #eee; margin: 20px 0; overflow-x: auto; padding: 10px; }
+		.example-container { border: 1px solid #ccc; float: left; margin-right: 20px; width: 350px; }
+		.example { padding: 0 20px 20px 20px; }
+		#sample-1 { }
+		#sample-2-container { }
+		#sample-2-header, #sample-2-footer { background: #f7f7f7; padding: 10px 20px; }
+		#sample-2-header { border-bottom: 1px solid #ccc; }
+		#sample-2-footer { border-top: 1px solid #ccc; }
+		#sample-2 { }
+		#sample-3 { }
 	</style>
 </head>
 <body>
-	<div id="left">
-		<h1>Full window height</h1>
+	<div id="sample-1" class="example-container example">
+		<h1>Sample 1</h1>
+<pre>$("#sample-1").aspen();</pre>
 	</div>
-	<div id="right">
-		<div id="right-header">Header</div>
-		<div id="above-and-below"><h1>Offset header and footer</h1></div>
-		<div id="right-footer">Footer</div>
+	<div id="sample-2-container" class="example-container">
+		<div id="sample-2-header">#sample-2-header</div>
+		<div id="sample-2" class="example">
+			<h1>Sample 2</h1>
+<pre>$("#sample-2").aspen({
+	above: "#sample-2-header",
+	below: "#sample-2-footer"
+});</pre>
+		</div>
+		<div id="sample-2-footer">#sample-2-footer</div>
+	</div>
+	<div id="sample-3" class="example-container example">
+		<h1>Sample 3</h1>
+<pre>$("#sample-3").aspen({
+	margin: "50"
+});</pre>
 	</div>
 	<script src="lib/jquery-1.9.1.js"></script>
 	<script src="source/jquery.aspen.js"></script>
 	<script>
 		(function () {
-			$("#left").aspen();
-			$("#above-and-below").aspen({
-				above: "#right-header",
-				below: "#right-footer"
+			setBodyWidth();
+
+			$("#sample-1").aspen();
+			$("#sample-2").aspen({
+				above: "#sample-2-header",
+				below: "#sample-2-footer"
 			});
+			$("#sample-3").aspen({
+				margin: "50"
+			});
+
+			function setBodyWidth () {
+				var $body = $("body");
+				var $examples = $(".example-container");
+				var bodyWidth = 0;
+				$.each($examples, function () {
+					var $currentExample = $(this);
+					bodyWidth += parseInt($currentExample.width(), 10);
+					bodyWidth += parseInt($currentExample.css("borderLeftWidth").replace("px", ""), 10) || 0;
+					bodyWidth += parseInt($currentExample.css("borderRightWidth").replace("px", ""), 10) || 0;
+					bodyWidth += parseInt($currentExample.css("marginLeft").replace("px", ""), 10) || 0;
+					bodyWidth += parseInt($currentExample.css("marginRight").replace("px", ""), 10) || 0;
+					bodyWidth += parseInt($currentExample.css("paddingLeft").replace("px", ""), 10) || 0;
+					bodyWidth += parseInt($currentExample.css("paddingRight").replace("px", ""), 10) || 0;
+				});
+				bodyWidth += parseInt($body.css("marginLeft").replace("px", ""), 10) || 0;
+				bodyWidth += parseInt($body.css("marginRight").replace("px", ""), 10) || 0;
+				console.log(bodyWidth);
+				$body.css({ "width": bodyWidth + "px" });
+			}
 		}());
 	</script>
 </body>

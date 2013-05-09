@@ -4,11 +4,7 @@
 
 	var pluginName = "aspen";
 	var resizeFunction = this.pluginName + "SmartResize";
-	var defaults = {
-		above: undefined,
-		below: undefined,
-		margin: "10"
-	};
+	var defaults = {};
 
 	// embedding smartresize plugin: http://paulirish.com/2009/throttled-smartresize-jquery-event-handler/
 	var debounce = function (func, threshold, execAsap) {
@@ -70,8 +66,8 @@
 			var offsetValues = [];
 			var windowHeight = this.$window.height();
 
-			offsetValues.push((parseInt(this.$body.css("marginTop").replace("px", ""), 10) + parseInt(this.$body.css("marginBottom").replace("px", ""), 10)));
-			var elPadding = this.borderBox ? 0 : (parseInt(this.$el.css("paddingTop").replace("px", ""), 10) + parseInt(this.$el.css("paddingBottom").replace("px", ""), 10));
+			offsetValues.push((this.cint(this.$body.css("marginTop")) + this.cint(this.$body.css("marginBottom"))));
+			var elPadding = this.borderBox ? 0 : (this.cint(this.$el.css("paddingTop")) + this.cint(this.$el.css("paddingBottom")));
 			offsetValues.push(elPadding);
 
 			if (this.options.above) {
@@ -85,9 +81,30 @@
 			}
 
 			// TODO: calculate margins to offset from elHeight
+			if (this.options.margin) {
+				var topMargin = 0;
+				var bottomMargin = 0;
+				var margins = this.options.margin.split(" ");
+
+				if (margins.length > 1) {
+					topMargin = margins[0];
+					bottomMargin = margins[1];
+				} else {
+					topMargin = margins[0];
+					bottomMargin = margins[0];
+				}
+
+				offsetValues.push(this.cint(topMargin));
+				offsetValues.push(this.cint(bottomMargin));
+
+				this.$el.css({
+					"margin-top": topMargin + "px",
+					"margin-bottom": bottomMargin + "px"
+				});
+			}
 
 			$.each(this.$parents, function () {
-				var padding = (parseInt($(this).css("paddingTop").replace("px", ""), 10) + parseInt($(this).css("paddingBottom").replace("px", ""), 10));
+				var padding = (self.cint($(this).css("paddingTop")) + self.cint($(this).css("paddingBottom")));
 				offsetValues.push(padding);
 			});
 
@@ -120,6 +137,10 @@
 			});
 
 			return isSet;
+		},
+
+		cint: function (target) {
+			return parseInt(target.replace("px", ""), 10);
 		}
 
 	};
