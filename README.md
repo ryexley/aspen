@@ -1,7 +1,7 @@
 ## Aspen
-Aspen is a jQuery plugin sets the target element height to the calculated, available vertical space.
+Aspen is a jQuery plugin that sets the target element height to the calculated, available vertical space.
 
-### What?
+### WAT?
 
 #### Background...
 I've written a number of single-page applications where the requirement was for the app to have "desktop" like behavior that contained elements that needed to occupy as much vertical space as possible, but still be fluid on browser resize. Enough so, that I got tired of copy/pasting and/or re-writing the same code over and over again, so I decided to wrap it up and make it a jQuery plugin that I could use anywhere I needed this behavior.
@@ -27,9 +27,9 @@ And thats it.
 ### Options
 The plugin evaluates the following options:
 
-* `above`: The selector of an element above the target element to offset the height for
-* `below`: The selector of an element below the target element to offset the height for
-* `margin`:
+* `above`: Selector of an element above the target element to offset the height for
+* `below`: Selector of an element below the target element to offset the height for
+* `margin`: Specifies the top and bottom margins to be applied to the target element. If only a single value is supplied, that value will be applied to both the top and bottom margins of the target. If two values are supplied (i.e. "50 100"), the first will be applied as the top margin, and the second will be applied as the bottom margin.
 
 See `index.html` for usage examples
 

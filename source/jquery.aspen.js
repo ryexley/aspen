@@ -104,7 +104,9 @@
 
 			$.each(this.$parents, function () {
 				var padding = (self.cint($(this).css("paddingTop")) + self.cint($(this).css("paddingBottom")));
+				var borders = (self.cint($(this).css("borderTopWidth")) + self.cint($(this).css("borderBottomWidth")));
 				offsetValues.push(padding);
+				offsetValues.push(borders);
 			});
 
 			// TODO: add a "nested" option that:
