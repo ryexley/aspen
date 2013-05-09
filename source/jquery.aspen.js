@@ -80,7 +80,6 @@
 				offsetValues.push(belowElHeight);
 			}
 
-			// TODO: calculate margins to offset from elHeight
 			if (this.options.margin) {
 				var topMargin = 0;
 				var bottomMargin = 0;
@@ -107,6 +106,11 @@
 				var padding = (self.cint($(this).css("paddingTop")) + self.cint($(this).css("paddingBottom")));
 				offsetValues.push(padding);
 			});
+
+			// TODO: add a "nested" option that:
+			//		 allows the user to specify how many levels deep a target element is nested,
+			//		 and calculate the offset of the parent elements to the specified depth
+			//		 (is specified depth needed? need to think through this a bit more)
 
 			var offset = offsetValues.reduce(function (a, b) {
 				return a + b;
