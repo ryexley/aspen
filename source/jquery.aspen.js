@@ -54,9 +54,11 @@
 		init: function () {
 			var self = this;
 
+			this.verticalOffsetProperties = ["borderTopWidth", "paddingTop", "paddingBottom", "borderBottomWidth"];
 			this.$window = $(window);
 			this.$body = $("body");
 			this.$el = $(this.el);
+			this.$parents = $(this.el).parents();
 			this.borderBox = this.borderBoxIsSet();
 
 			this.$window[this.resizeFunction](function () { self.setElementHeight(); });
@@ -64,22 +66,47 @@
 		},
 
 		setElementHeight: function () {
-			console.log("Resizing el");
+			var self = this;
 			var offsetValues = [];
 			var windowHeight = this.$window.height();
 
 			offsetValues.push((parseInt(this.$body.css("marginTop").replace("px", ""), 10) + parseInt(this.$body.css("marginBottom").replace("px", ""), 10)));
 			var elPadding = this.borderBox ? 0 : (parseInt(this.$el.css("paddingTop").replace("px", ""), 10) + parseInt(this.$el.css("paddingBottom").replace("px", ""), 10));
 			offsetValues.push(elPadding);
-			// TODO: check for and calculate the height of the "above" option
-			// TODO: check for and calculate the height of the "below" option
+
+			if (this.options.above) {
+				var aboveElHeight = this.calculateElHeight(this.options.above);
+				offsetValues.push(aboveElHeight);
+			}
+
+			if (this.options.below) {
+				var belowElHeight = this.calculateElHeight(this.options.below);
+				offsetValues.push(belowElHeight);
+			}
+
 			// TODO: calculate margins to offset from elHeight
+
+			$.each(this.$parents, function () {
+				var padding = (parseInt($(this).css("paddingTop").replace("px", ""), 10) + parseInt($(this).css("paddingBottom").replace("px", ""), 10));
+				offsetValues.push(padding);
+			});
+
 			var offset = offsetValues.reduce(function (a, b) {
 				return a + b;
 			});
 			var elHeight = (windowHeight - offset);
 
 			this.$el.css({ height: elHeight + "px" });
+		},
+
+		calculateElHeight: function (el) {
+			var $el = $(el);
+			var elHeight = $el.height();
+			$.each(this.verticalOffsetProperties, function () {
+				elHeight += parseInt($el.css(this).replace("px", ""), 10);
+			});
+
+			return elHeight;
 		},
 
 		borderBoxIsSet: function () {

@@ -7,18 +7,32 @@
 		* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 		body { font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; font-weight: 300; margin: 20px; }
 		h1, h2, h3, h4, h5, h6 { font-weight: 100; }
-		#stretch { border: 1px solid #ccc; padding: 20px; width: 50%; }
+		#left { border: 1px solid #ccc; float: left; padding: 20px; width: 50%; }
+		#right { float: left; padding: 0 20px; width: 50%; }
+		#right-header, #right-footer { background: #f7f7f7; border-left: 1px solid #ccc; border-right: 1px solid #ccc; padding: 10px 20px; }
+		#right-header { border-top: 1px solid #ccc; }
+		#right-footer { border-bottom: 1px solid #ccc; }
+		#above-and-below { border: 1px solid #ccc; padding: 20px; }
 	</style>
 </head>
 <body>
-	<div id="stretch">
+	<div id="left">
 		<h1>Aspen</h1>
+	</div>
+	<div id="right">
+		<div id="right-header">Header</div>
+		<div id="above-and-below"><h1>Offset header and footer</h1></div>
+		<div id="right-footer">Footer</div>
 	</div>
 	<script src="lib/jquery-1.9.1.js"></script>
 	<script src="source/jquery.aspen.js"></script>
 	<script>
 		(function () {
-			$("#stretch").aspen();
+			$("#left").aspen();
+			$("#above-and-below").aspen({
+				above: "#right-header",
+				below: "#right-footer"
+			});
 		}());
 	</script>
 </body>
