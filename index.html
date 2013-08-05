@@ -20,6 +20,9 @@
 		#sample-2-footer { border-top: 1px solid #ccc; }
 		#sample-2 { }
 		#sample-3 { min-height: 200px; }
+		#sample-6-header, #sample-6-footer, #sample-6-subheader, #sample-6-subfooter { background: #f7f7f7; padding: 10px 20px; }
+		#sample-6-header, #sample-6-subheader { border-bottom: 1px solid #ccc; }
+		#sample-6-footer, #sample-6-subfooter { border-top: 1px solid #ccc; }
 	</style>
 </head>
 <body class="clearfix">
@@ -56,6 +59,19 @@
     margin: "150 0"
 });</pre>
 	</div>
+	<div id="sample-6-container" class="example-container">
+		<div id="sample-6-header">#sample-6-header</div>
+		<div id="sample-6-subheader">#sample-6-subheader</div>
+		<div id="sample-6" class="example">
+			<h1>Sample 6</h1>
+<pre>$("#sample-6").aspen({
+    above: "#sample-6-header #sample-6-subheader",
+    below: "#sample-6-footer #sample-6-subfooter"
+});</pre>
+		</div>
+		<div id="sample-6-subfooter">#sample-6-subfooter</div>
+		<div id="sample-6-footer">#sample-6-footer</div>
+	</div>
 	<script src="lib/jquery-1.9.1.js"></script>
 	<script src="source/jquery.aspen.js"></script>
 	<script>
@@ -75,6 +91,10 @@
 			});
 			$("#sample-5").aspen({
 				margin: "150 0"
+			});
+			$("#sample-6").aspen({
+				above: "#sample-6-header #sample-6-subheader",
+				below: "#sample-6-footer #sample-6-subfooter"
 			});
 
 			function setBodyWidth () {

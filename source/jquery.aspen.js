@@ -71,12 +71,12 @@
 			offsetValues.push(elPadding);
 
 			if (this.options.above) {
-				var aboveElHeight = this.calculateElHeight(this.options.above);
+				var aboveElHeight = this.calculateOffset(this.options.above);
 				offsetValues.push(aboveElHeight);
 			}
 
 			if (this.options.below) {
-				var belowElHeight = this.calculateElHeight(this.options.below);
+				var belowElHeight = this.calculateOffset(this.options.below);
 				offsetValues.push(belowElHeight);
 			}
 
@@ -120,6 +120,17 @@
 			var elHeight = (windowHeight - offset);
 
 			this.$el.css({ height: elHeight + "px" });
+		},
+
+		calculateOffset: function (above) {
+			var self = this;
+			var offset = 0;
+			var els = above.split(" ");
+			$.each(els, function (index, value) {
+				offset += self.calculateElHeight(value);
+			});
+
+			return offset;
 		},
 
 		calculateElHeight: function (el) {
