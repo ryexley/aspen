@@ -45,6 +45,44 @@
 		this.init();
 	}
 
+	// add Array.reduce function for older browsers
+	if ('function' !== typeof Array.prototype.reduce) {
+	    Array.prototype.reduce = function(callback, opt_initialValue) {
+	        'use strict';
+	        if (null === this || 'undefined' === typeof this) {
+	            // At the moment all modern browsers, that support strict mode, have
+	            // native implementation of Array.prototype.reduce. For instance, IE8
+	            // does not support strict mode, so this check is actually useless.
+	            throw new TypeError(
+	                'Array.prototype.reduce called on null or undefined');
+	        }
+	        if ('function' !== typeof callback) {
+	            throw new TypeError(callback + ' is not a function');
+	        }
+	        var index, value,
+	            length = this.length >>> 0,
+	            isValueSet = false;
+	        if (1 < arguments.length) {
+	            value = opt_initialValue;
+	            isValueSet = true;
+	        }
+	        for (index = 0; length > index; ++index) {
+	            if (this.hasOwnProperty(index)) {
+	                if (isValueSet) {
+	                    value = callback(value, this[index], index, this);
+	                } else {
+	                    value = this[index];
+	                    isValueSet = true;
+	                }
+	            }
+	        }
+	        if (!isValueSet) {
+	            throw new TypeError('Reduce of empty array with no initial value');
+	        }
+	        return value;
+	    };
+	}
+
 	Plugin.prototype = {
 
 		init: function () {
@@ -86,15 +124,15 @@
 				var margins = this.options.margin.split(" ");
 
 				if (margins.length > 1) {
-					topMargin = margins[0];
-					bottomMargin = margins[1];
+					topMargin = parseInt(margins[0], 10);
+					bottomMargin = parseInt(margins[1], 10);
 				} else {
-					topMargin = margins[0];
-					bottomMargin = margins[0];
+					topMargin = parseInt(margins[0], 10);
+					bottomMargin = parseInt(margins[0], 10);
 				}
 
-				offsetValues.push(this.cint(topMargin));
-				offsetValues.push(this.cint(bottomMargin));
+				offsetValues.push(topMargin);
+				offsetValues.push(bottomMargin);
 
 				this.$el.css({
 					"margin-top": topMargin + "px",
@@ -114,12 +152,18 @@
 			//		 and calculate the offset of the parent elements to the specified depth
 			//		 (is specified depth needed? need to think through this a bit more)
 
+			var offsetFallback = 0;
+			$.each(offsetValues, function (index, offsetValue) {
+				offsetFallback += offsetValue || 0;
+			});
+
 			var offset = offsetValues.reduce(function (a, b) {
 				return a + b;
-			});
-			var elHeight = (windowHeight - offset);
+			}, 0);
 
-			this.$el.css({ height: elHeight + "px" });
+			var elHeight = (windowHeight - (offset || offsetFallback));
+
+			this.$el.css({ "height": elHeight + "px" });
 		},
 
 		calculateOffset: function (above) {
@@ -130,14 +174,15 @@
 				offset += self.calculateElHeight(value);
 			});
 
-			return offset;
+			return parseInt(offset, 10);
 		},
 
 		calculateElHeight: function (el) {
+			var self = this;
 			var $el = $(el);
 			var elHeight = $el.height();
-			$.each(this.verticalOffsetProperties, function () {
-				elHeight += parseInt($el.css(this).replace("px", ""), 10);
+			$.each(this.verticalOffsetProperties, function (index, property) {
+				elHeight += self.cint($el.css(property));
 			});
 
 			return elHeight;
@@ -157,7 +202,7 @@
 		},
 
 		cint: function (target) {
-			return parseInt(target.replace("px", ""), 10);
+			return parseInt(target.replace("px", ""), 10) || 0;
 		}
 
 	};
